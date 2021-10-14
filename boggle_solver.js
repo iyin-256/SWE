@@ -38,10 +38,10 @@ function insert(root, word) {
     curr.is_word = true;
 }
 
-function safe(i, j, visited) {
+function safe(i, j, visited, M) {
     return (i >= 0
         && i < M && j >= 0
-        && j < N
+        && j < M
         && !visited[i][j]);
 }
 
@@ -49,59 +49,60 @@ function search(curr, boggle, i, j, visited, str, res)
 {
         if (curr.is_word === true && !(res.includes(str)) && str.length > 2)
         res.push(str)
+    
+    let M = boggle.length
 
-
-    if (safe(i, j, visited))
+    if (safe(i, j, visited, M))
         visited[i][j] = true
 
 
     for (let child in curr.children)
         if (curr.children[child] != null) {
-            ch = child
+            let ch = child
 
-            if (safe(i + 1, j + 1, visited)
+            if (safe(i + 1, j + 1, visited, M)
                 && boggle[i + 1][j + 1].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i + 1, j + 1,
                     visited, str + ch, res)
 
-            if (safe(i, j + 1, visited)
+            if (safe(i, j + 1, visited, M)
                 && boggle[i][j + 1].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i, j + 1,
                     visited, str + ch, res)
 
-            if (safe(i - 1, j + 1, visited)
+            if (safe(i - 1, j + 1, visited, M)
                 && boggle[i - 1][j + 1].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i - 1, j + 1,
                     visited, str + ch, res)
 
-            if (safe(i + 1, j, visited)
+            if (safe(i + 1, j, visited, M)
                 && boggle[i + 1][j].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i + 1, j,
                     visited, str + ch, res)
 
-            if (safe(i + 1, j - 1, visited)
+            if (safe(i + 1, j - 1, visited, M)
                 && boggle[i + 1][j - 1].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i + 1, j - 1,
                     visited, str + ch, res)
 
-            if (safe(i, j - 1, visited)
+            if (safe(i, j - 1, visited, M)
                 && boggle[i][j - 1].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i, j - 1,
                     visited, str + ch, res)
 
-            if (safe(i - 1, j - 1, visited)
+            if (safe(i - 1, j - 1, visited, M)
                 && boggle[i - 1][j - 1].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i - 1, j - 1,
                     visited, str + ch, res)
 
-            if (safe(i - 1, j, visited)
+            if (safe(i - 1, j, visited, M)
                 && boggle[i - 1][j].toUpperCase() === ch)
                 search(curr.children[child], boggle,
                     i - 1, j,
@@ -110,9 +111,7 @@ function search(curr, boggle, i, j, visited, str, res)
         visited[i][j] = false
 }
 
-function find_words(boggle, root, res) {
-    M = boggle.length
-    N = boggle.length
+function find_words(boggle, root, res, M, N) {
 
     let visited = Array.from(Array(M), () => new Array(N).fill(false))
     let curr_node = root
@@ -140,8 +139,8 @@ exports.findAllSolutions = function(grid, dictionary) {
     let root = new Node();
     let res = []
     
-    let M = grid.length
-    let N = grid.length
+    var M = grid.length
+    var N = grid.length
 
     let n = dictionary.length
     for (let i = 0; i < n; i++)
@@ -149,7 +148,7 @@ exports.findAllSolutions = function(grid, dictionary) {
 
     for (let i = 0; i < M; i++)
         for (let j = 0; j < N; j++) {
-            find_words(grid, root, res)
+            find_words(grid, root, res, M, N)
         }
     return res;
 }
